@@ -1,0 +1,15 @@
+{
+
+  "keywords": [
+  ],
+  "main": "./index.js",
+  "license": "MIT",
+  "dependencies": {
+    "azure-arm-compute": "^3.0.0-preview",
+    "azure-arm-resource": "^1.6.1-preview",
+    "azure-arm-network": "^5.3.0",
+    "ms-rest-azure": "^2.6.0",
+    "async": "0.2.7"
+  }
+
+}
