@@ -1,3 +1,4 @@
+'use strict'
 const util = require('util');
 const msRestAzure = require('ms-rest-azure');
 const NetworkManagementClient = require('azure-arm-network');
@@ -12,21 +13,15 @@ const app_secret = process.env["app_secret"];
 const nsg = process.env["securityGroup"];
 
 var ipconfigParm;
+var src_ip;
 
 
 module.exports = async function (context, req) {
     context.log('JavaScript HTTP trigger function processed a request.');
     src_ip = context.bindings.req.body.data.rawlog.srcip;
-    stringtest = JSON.stringify(src_ip)
-    resp = {
-        'isBase64Encoded' : false,
-        'statusCode': 200,
-        'headers': { "Content-Type": "application/json" },
-        'body': ''
-};
+    context.log('IP Received:' + src_ip);
 
-
-   var getNics = await getVMs();
+   var quarentine = await getVMs();
 
 
 function updateSecurityGroup(resourceGroup, nic,params){
@@ -52,20 +47,20 @@ async function getNics(nic){
             'the current subscription:\n%s', util.inspect(err, { depth: null })));
         } else {
            try{
-           ipLocation = result.ipConfigurations[0].publicIPAddress.id
-           console.log(result.ipConfigurations[0].publicIPAddress.id);
+            var ipLocation = result.ipConfigurations[0].publicIPAddress.id
             var indexItem = ipLocation;
             var lastindex = indexItem.lastIndexOf('/');
             var ipName = indexItem.substring(lastindex +1);
 
-///Parameters for security group update
+            ///Parameters for security group update
             ipconfigParm = result.ipConfigurations[0]
+            var regionName = result.location;
             const params = {
-              location: "East US 2",
+              location: regionName,
               networkSecurityGroup :{
 
-                  id:nsg,
-                  location:"East US 2",
+                  id:nsg
+
 
               },
                ipConfigurations: [ipconfigParm]
@@ -118,20 +113,19 @@ async function getNics(nic){
         console.log(util.format('\n Error  ' +
           'the current subscription:\n%s', util.inspect(err, { depth: null })));
       } else {
-          astring = JSON.stringify(result);
           var list1 = [];
           var list2 = [];
           for (var i = 0; i <result.length; i++){
             var object = result[i];
             list1.push(object.networkProfile.networkInterfaces[0].id);
           }
-          for(j in list1){
+          for(var j in list1){
               var indexItem = list1[j];
               var lastindex = indexItem.lastIndexOf('/');
               var result = indexItem.substring(lastindex +1);
               list2.push(result);
         }
-            for (k in list2){
+            for (var k in list2){
               getNics(list2[k]);
              }
         return list2;
@@ -139,3 +133,4 @@ async function getNics(nic){
     }));
 });
    };
+};
