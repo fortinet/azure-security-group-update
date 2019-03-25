@@ -5,10 +5,13 @@ It works by first fetching information on all the VMs in a resource group, query
 
 > **Note:** If you have more than one network card attached to a VM this function will not change the security group for all of them, only the network card with the associated IP address.
 
+# Requirements
+This function requires:
+* FortiOS 6.2 or higher
+* A service principal (for authentication). For details on setting up a service principal, refer to the Microsoft article [Create an Azure service principal with Node.js](https://docs.microsoft.com/en-us/javascript/azure/node-sdk-azure-authenticate-principal?view=azure-node-latest). Additional code samples can be found in the [Azure Github repository](https://github.com/Azure/azure-sdk-for-node/blob/master/Documentation/Authentication.md).
+* Node.js
+
 # Set up the Azure function
-
-This function uses a service principal to authenticate. For details on setting up a service principal, refer to the Microsoft article [Create an Azure service principal with Node.js](https://docs.microsoft.com/en-us/javascript/azure/node-sdk-azure-authenticate-principal?view=azure-node-latest). Additional code samples can be found in the [Azure Github repository](https://github.com/Azure/azure-sdk-for-node/blob/master/Documentation/Authentication.md).
-
   1. In the Azure portal, click **Create a resource** from the upper left-hand corner.
   2. Click **Compute** and then **Function App**.
   3. For **OS**, click on **Windows**.
@@ -33,7 +36,6 @@ This function uses a service principal to authenticate. For details on setting u
       * **QUARANTINE_SECURITY_GROUP:** The Network Security Group you want to use to quarantine VMs.
 
 # Set up the FortiGate
-
   1. Log into your FortiGate.
   2. Select **Security Fabric > Automation**.
   3. Click **Create New**.
